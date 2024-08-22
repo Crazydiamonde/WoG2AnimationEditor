@@ -72,8 +72,8 @@ public class AnimBinReader {
             binAnimation.groupTimings[i].unknown1 = ByteBuffer.wrap(input.readNBytes(4)).order(ByteOrder.LITTLE_ENDIAN).getInt(0);
             binAnimation.groupTimings[i].timingIndexOffset = ByteBuffer.wrap(input.readNBytes(4)).order(ByteOrder.LITTLE_ENDIAN).getInt(0);
             binAnimation.groupTimings[i].timingIndexLength = ByteBuffer.wrap(input.readNBytes(4)).order(ByteOrder.LITTLE_ENDIAN).getInt(0);
-            binAnimation.groupTimings[i].keyframeOffset = ByteBuffer.wrap(input.readNBytes(4)).order(ByteOrder.LITTLE_ENDIAN).getInt(0);
-            binAnimation.groupTimings[i].keyframeLength = ByteBuffer.wrap(input.readNBytes(4)).order(ByteOrder.LITTLE_ENDIAN).getInt(0);
+            binAnimation.groupTimings[i].timedEventOffset = ByteBuffer.wrap(input.readNBytes(4)).order(ByteOrder.LITTLE_ENDIAN).getInt(0);
+            binAnimation.groupTimings[i].timedEventLength = ByteBuffer.wrap(input.readNBytes(4)).order(ByteOrder.LITTLE_ENDIAN).getInt(0);
         }
 
         binAnimation.timingIndices = new BinAnimation.TimingIndex[int5];
@@ -326,6 +326,40 @@ public class AnimBinReader {
         }
 
         binAnimation.stringTable = new String(input.readAllBytes()).split("\u0000");
+
+
+
+        int i1 = 0;
+        for (BinAnimation.GroupTiming groupTiming : binAnimation.groupTimings) {
+
+            System.out.println("Begin group timing " + i1);
+            i1++;
+
+            int i2 = 0;
+            for (int timingIndexI = groupTiming.timingIndexOffset; timingIndexI < groupTiming.timingIndexOffset + groupTiming.timingIndexLength; timingIndexI++) {
+
+                BinAnimation.TimingIndex timingIndex = binAnimation.timingIndices[timingIndexI];
+
+                System.out.println("Begin timing index " + i2);
+                i2++;
+
+                for (int timingI = timingIndex.timingOffset; timingI < timingIndex.timingOffset + timingIndex.timingLength; timingI++) {
+
+                    BinAnimation.KeyframeTiming keyframeTiming = binAnimation.keyframeTimings[timingI];
+
+                    System.out.println(keyframeTiming.sequenceId + " : " + keyframeTiming.keyframe + " : " + keyframeTiming.untilFrame);
+
+                }
+
+                System.out.println();
+
+            }
+
+            System.out.println();
+
+        }
+
+
 
         return binAnimation;
 

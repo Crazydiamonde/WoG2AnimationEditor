@@ -32,9 +32,9 @@ public class BinAnimation {
         public int timingIndexLength;
 
         @JacksonXmlProperty (isAttribute = true)
-        public int keyframeOffset;
+        public int timedEventOffset;
         @JacksonXmlProperty (isAttribute = true)
-        public int keyframeLength;
+        public int timedEventLength;
 
     }
 
