@@ -1,5 +1,7 @@
 package com.crazine.animationeditor;
 
+import com.crazine.animationeditor.animation.Animation;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -325,43 +327,84 @@ public class AnimBinReader {
             binAnimation.stringDefinitions[i].stringTableIndex = ByteBuffer.wrap(input.readNBytes(4)).order(ByteOrder.LITTLE_ENDIAN).getInt(0);
         }
 
-        binAnimation.stringTable = new String(input.readAllBytes()).split("\u0000");
+        binAnimation.stringTableBytes = input.readAllBytes();
+        binAnimation.stringTable = new String(binAnimation.stringTableBytes).split("\u0000");
+
+        int i = 0;
+        for (BinAnimation.DefineGroup defineGroup : binAnimation.defineGroups) {
+            System.out.println(binAnimation.getString(binAnimation.stringDefinitions[binAnimation.groupNameStringTableIndices[i]].stringTableIndex));
+            i++;
+            recursivePrintGroup(binAnimation, defineGroup.uid, 0);
+        }
+
+        new Animation(binAnimation);
+
+        return binAnimation;
+
+    }
 
 
+    private static void recursivePrintGroup(BinAnimation binAnimation, int i1, int depth) {
 
-        int i1 = 0;
-        for (BinAnimation.GroupTiming groupTiming : binAnimation.groupTimings) {
+        BinAnimation.GroupTiming groupTiming = binAnimation.groupTimings[i1];
 
-            System.out.println("Begin group timing " + i1);
-            i1++;
+        for (int timingIndexI = groupTiming.timingIndexOffset; timingIndexI < groupTiming.timingIndexOffset + groupTiming.timingIndexLength; timingIndexI++) {
 
-            int i2 = 0;
-            for (int timingIndexI = groupTiming.timingIndexOffset; timingIndexI < groupTiming.timingIndexOffset + groupTiming.timingIndexLength; timingIndexI++) {
+            BinAnimation.TimingIndex timingIndex = binAnimation.timingIndices[timingIndexI];
 
-                BinAnimation.TimingIndex timingIndex = binAnimation.timingIndices[timingIndexI];
+            for (int timingI = timingIndex.timingOffset; timingI < timingIndex.timingOffset + timingIndex.timingLength; timingI++) {
 
-                System.out.println("Begin timing index " + i2);
-                i2++;
+                BinAnimation.KeyframeTiming keyframeTiming = binAnimation.keyframeTimings[timingI];
 
-                for (int timingI = timingIndex.timingOffset; timingI < timingIndex.timingOffset + timingIndex.timingLength; timingI++) {
+                if (keyframeTiming.sequenceId == 0) {
+                    System.out.println("\t".repeat(depth) + "None (frame=" + keyframeTiming.untilFrame + ")");
 
-                    BinAnimation.KeyframeTiming keyframeTiming = binAnimation.keyframeTimings[timingI];
+                } else if (keyframeTiming.sequenceId == 1) {
+                    System.out.print("\t".repeat(depth) + "Keyframe (frame=" + keyframeTiming.untilFrame + "): {");
 
-                    System.out.println(keyframeTiming.sequenceId + " : " + keyframeTiming.keyframe + " : " + keyframeTiming.untilFrame);
+                    BinAnimation.Keyframe keyframe = binAnimation.keyframes[keyframeTiming.keyframe];
 
+                    System.out.print(keyframe.attribute2 + ", ");
+                    System.out.print(keyframe.angleTopLeft + ", ");
+                    System.out.print(keyframe.angleBottomRight + ", ");
+                    System.out.print(keyframe.x1 + ", ");
+                    System.out.print(keyframe.y1 + ", ");
+                    System.out.print(keyframe.x2 + ", ");
+                    System.out.print(keyframe.y2 + ", ");
+                    System.out.print(keyframe.scaleX + ", ");
+                    System.out.print(keyframe.scaleY + ", ");
+                    System.out.print(keyframe.colorize + ", ");
+                    System.out.println(keyframe.attribute12 + "}");
+
+                    recursivePrintGroup(binAnimation, keyframe.attribute1, depth + 1);
+
+                } else if (keyframeTiming.sequenceId == 2) {
+                    System.out.print("\t".repeat(depth) + "Image (frame=" + keyframeTiming.untilFrame + "): ");
+
+                    BinAnimation.ImageProperties imageProperties = binAnimation.imageProperties[keyframeTiming.keyframe];
+
+                    System.out.println(binAnimation.getString(binAnimation.stringDefinitions[binAnimation.imageStringTableIndices[imageProperties.imageIndex]].stringTableIndex));
+
+                } else if (keyframeTiming.sequenceId == 3) {
+                    System.out.print("\t".repeat(depth) + "Property 9 (frame=" + keyframeTiming.untilFrame + "): {");
+
+                    BinAnimation.Property9 property9 = binAnimation.property9s[keyframeTiming.keyframe];
+
+                    System.out.print(property9.attribute1 + ", ");
+                    System.out.print(property9.attribute2 + ", ");
+                    System.out.print(property9.attribute3 + ", ");
+                    System.out.print(property9.attribute4 + ", ");
+                    System.out.print(property9.attribute5 + ", ");
+                    System.out.print(property9.attribute6 + ", ");
+                    System.out.println(property9.attribute7 + "}");
+
+                } else if (keyframeTiming.sequenceId == 4) {
+                    System.out.println("\t".repeat(depth) + "Property 8 (frame=" + keyframeTiming.untilFrame + ")");
                 }
-
-                System.out.println();
 
             }
 
-            System.out.println();
-
         }
-
-
-
-        return binAnimation;
 
     }
 

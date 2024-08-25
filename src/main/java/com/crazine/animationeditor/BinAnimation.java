@@ -1,5 +1,6 @@
 package com.crazine.animationeditor;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
@@ -484,5 +485,21 @@ public class BinAnimation {
     @JacksonXmlElementWrapper (localName = "stringTable")
     @JacksonXmlProperty (localName = "string")
     public String[] stringTable;
+
+
+    @JsonIgnore
+    public byte[] stringTableBytes;
+
+
+    @JsonIgnore
+    public String getString(int stringTableIndex) {
+        StringBuilder stringBuilder = new StringBuilder();
+        int currentIndex = stringTableIndex;
+        while (stringTableBytes[currentIndex] != 0) {
+            stringBuilder.append((char)stringTableBytes[currentIndex]);
+            currentIndex++;
+        }
+        return stringBuilder.toString();
+    }
 
 }
