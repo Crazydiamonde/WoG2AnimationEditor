@@ -332,9 +332,9 @@ public class AnimBinReader {
 
         int i = 0;
         for (BinAnimation.DefineGroup defineGroup : binAnimation.defineGroups) {
-            System.out.println(binAnimation.getString(binAnimation.stringDefinitions[binAnimation.groupNameStringTableIndices[i]].stringTableIndex));
+            // System.out.println(binAnimation.getString(binAnimation.stringDefinitions[binAnimation.groupNameStringTableIndices[i]].stringTableIndex));
             i++;
-            recursivePrintGroup(binAnimation, defineGroup.uid, 0);
+            // recursivePrintGroup(binAnimation, defineGroup.uid, 0);
         }
 
         new Animation(binAnimation);

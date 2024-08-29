@@ -4,10 +4,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 @JacksonXmlRootElement(localName = "Part")
-public class AnimationPart extends AnimationElement {
-
-    @JacksonXmlProperty(isAttribute = true)
-    public int untilFrame;
+public class AnimationPart extends AnimationObject {
 
     @JacksonXmlProperty(isAttribute = true)
     public String image;
@@ -41,5 +38,15 @@ public class AnimationPart extends AnimationElement {
 
     @JacksonXmlProperty (isAttribute = true)
     public int unknown1;
+
+    @Override
+    public String getType() {
+        return "Part";
+    }
+
+    @Override
+    public String getId() {
+        return image;
+    }
 
 }

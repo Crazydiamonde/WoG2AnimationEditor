@@ -2,7 +2,7 @@ package com.crazine.animationeditor.animation;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
-public class AnimationProperty7 {
+public class AnimationProperty7 extends AnimationObject {
 
     @JacksonXmlProperty(isAttribute = true)
     public int attribute1;
@@ -20,5 +20,10 @@ public class AnimationProperty7 {
 
     @JacksonXmlProperty (isAttribute = true)
     public int attribute5;
+
+    @Override
+    public String getType() {
+        return "Property 7";
+    }
 
 }

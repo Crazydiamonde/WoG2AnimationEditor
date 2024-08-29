@@ -7,9 +7,6 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 public class AnimationProperty9 extends AnimationElement {
 
     @JacksonXmlProperty(isAttribute = true)
-    public int group;
-
-    @JacksonXmlProperty(isAttribute = true)
     public int untilFrame;
 
     @JacksonXmlProperty(isAttribute = true)
@@ -32,5 +29,10 @@ public class AnimationProperty9 extends AnimationElement {
 
     @JacksonXmlProperty (isAttribute = true)
     public float attribute7;
+
+    @Override
+    public String getType() {
+        return "Property 9";
+    }
 
 }

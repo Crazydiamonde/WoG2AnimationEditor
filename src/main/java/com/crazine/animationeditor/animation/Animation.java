@@ -1,19 +1,13 @@
 package com.crazine.animationeditor.animation;
 
 import com.crazine.animationeditor.BinAnimation;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
-import java.io.IOException;
-import java.io.StringWriter;
+import java.util.ArrayList;
 
-public class Animation {
+public class Animation extends AnimationObject {
 
     @JacksonXmlProperty(isAttribute = true)
     public int fps;
@@ -23,9 +17,35 @@ public class Animation {
     public AnimationState[] animationStates;
 
 
+    @JsonIgnore
+    @HideTreeItem
+    public final ArrayList<AnimationPart> animationParts = new ArrayList<>();
+
+
     public Animation(BinAnimation binAnimation) {
 
         fps = binAnimation.fps;
+
+        for (BinAnimation.ImageProperties imageProperties : binAnimation.imageProperties) {
+            AnimationPart animationPart = new AnimationPart();
+
+            // animationPart.untilFrame = keyframeTiming.untilFrame;
+            animationPart.image = binAnimation.getString(binAnimation.stringDefinitions[
+                    binAnimation.imageStringTableIndices[imageProperties.imageIndex]].stringTableIndex);
+            animationPart.angleTopLeft = imageProperties.angleTopLeft;
+            animationPart.angleBottomRight = imageProperties.angleBottomRight;
+            animationPart.centerX = imageProperties.centerX;
+            animationPart.centerY = imageProperties.centerY;
+            animationPart.offsetX = imageProperties.offsetX;
+            animationPart.offsetY = imageProperties.offsetY;
+            animationPart.scaleX = imageProperties.scaleX;
+            animationPart.scaleY = imageProperties.scaleY;
+            animationPart.colorize = imageProperties.colorize;
+            animationPart.unknown1 = imageProperties.attribute11;
+
+            animationParts.add(animationPart);
+
+        }
 
         int animationStateIndex = 0;
         animationStates = new AnimationState[binAnimation.defineGroups.length];
@@ -50,17 +70,6 @@ public class Animation {
             animationStateIndex++;
 
         }
-
-        XmlMapper xmlMapper = new XmlMapper();
-        xmlMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
-        xmlMapper.enableDefaultTyping();
-        StringWriter writer = new StringWriter();
-        try {
-            xmlMapper.writeValue(writer, this);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        System.out.println(writer);
 
     }
 
@@ -124,27 +133,9 @@ public class Animation {
                     }
 
                     case 2 -> {
-
-                        BinAnimation.ImageProperties imageProperties = binAnimation.imageProperties[keyframeTiming.keyframe];
-
-                        AnimationPart animationPart = new AnimationPart();
-
-                        animationPart.untilFrame = keyframeTiming.untilFrame;
-                        animationPart.image = binAnimation.getString(binAnimation.stringDefinitions[
-                                binAnimation.imageStringTableIndices[imageProperties.imageIndex]].stringTableIndex);
-                        animationPart.angleTopLeft = imageProperties.angleTopLeft;
-                        animationPart.angleBottomRight = imageProperties.angleBottomRight;
-                        animationPart.centerX = imageProperties.centerX;
-                        animationPart.centerY = imageProperties.centerY;
-                        animationPart.offsetX = imageProperties.offsetX;
-                        animationPart.offsetY = imageProperties.offsetY;
-                        animationPart.scaleX = imageProperties.scaleX;
-                        animationPart.scaleY = imageProperties.scaleY;
-                        animationPart.colorize = imageProperties.colorize;
-                        animationPart.unknown1 = imageProperties.attribute11;
-
-                        animationSection.animationElements[animationElementIndex] = animationPart;
-
+                        AnimationPartReference animationPartReference = new AnimationPartReference();
+                        animationPartReference.animationPart = animationParts.get(keyframeTiming.keyframe);
+                        animationSection.animationElements[animationElementIndex] = animationPartReference;
                     }
 
                     case 3 -> {
@@ -202,6 +193,11 @@ public class Animation {
 
         }
 
+    }
+
+    @Override
+    public String getType() {
+        return "Animation";
     }
 
 }
