@@ -45,9 +45,6 @@ public class MouseWheelMovedManager {
         level.setOffsetY(newTranslateY);
         level.setZoom(newScaleX);
 
-        // Redraw the canvas.
-        Renderer.render(FX_Canvas.getCanvas(), level, 0);
-
 
     }
 

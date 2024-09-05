@@ -52,8 +52,8 @@ public class HelloApplication extends Application {
         stage.setScene(FX_Scene.getScene());
         stage.show();
 
-        File binFile = new File("D:/World of Goo 2/game/res/anim/Launchers/BallLauncher/BallLauncher.anim.bin");
-        onOpenBin(binFile);
+        //File binFile = new File("D:/World of Goo 2/game/res/anim/Launchers/BallLauncher/BallLauncher.anim.bin");
+        //onOpenBin(binFile);
 
         new FX_EditorWindow().start();
 

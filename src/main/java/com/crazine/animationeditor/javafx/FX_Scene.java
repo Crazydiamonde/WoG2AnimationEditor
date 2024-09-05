@@ -97,7 +97,7 @@ public class FX_Scene {
         FX_Timeline.buildTimeline();
 
         dragTarget.getChildren().addAll(FX_Hierarchy.getHierarchySwitcherButtons(), FX_Hierarchy.getHierarchy(), FX_PropertiesView.getPropertiesView());
-        dragTarget.setPrefSize(1920, 1080);
+        dragTarget.setPrefSize(960, 540);
 
         VBox vBox2 = new VBox();
         Pane pane = new Pane(FX_Canvas.getCanvas());
@@ -109,16 +109,16 @@ public class FX_Scene {
         SplitPane splitPane = new SplitPane(vBox2, dragTarget);
         vBox2.prefHeightProperty().bind(splitPane.heightProperty());
         pane.prefHeightProperty().bind(splitPane.heightProperty());
-        splitPane.setPrefSize(1920, 1080);
+        splitPane.setPrefSize(960, 540);
 
         splitPane.setDividerPositions(0.7);
         FX_Canvas.getCanvas().setOnScroll(MouseWheelMovedManager::onMouseWheelMoved);
 
         VBox vBox = new VBox();
         vBox.getChildren().addAll(menuBar, splitPane);
-        vBox.setPrefSize(1920, 1080);
+        vBox.setPrefSize(960, 540);
 
-        scene = new Scene(vBox, 1920, 1080);
+        scene = new Scene(vBox, 960, 540);
 
     }
 

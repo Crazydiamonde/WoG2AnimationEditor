@@ -12,9 +12,14 @@ public class FX_Timeline {
     }
 
 
+    private static final ScrollBar scrollBar = new ScrollBar();
+    public static ScrollBar getScrollBar() {
+        return scrollBar;
+    }
+
+
     public static void buildTimeline() {
 
-        ScrollBar scrollBar = new ScrollBar();
         scrollBar.setOrientation(Orientation.HORIZONTAL);
 
         timeline.getChildren().add(scrollBar);
