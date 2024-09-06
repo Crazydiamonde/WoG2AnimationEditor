@@ -16,7 +16,7 @@ public class HelloApplication extends Application {
 
     public static void onOpenBin(File binFile) {
 
-        BinAnimation binAnimation = FileTransferManager.readBin(binFile);
+        FinalBinAnimation binAnimation = FileTransferManager.readBin(binFile);
         assert binAnimation != null;
         Animation animation = new Animation(binAnimation);
         SceneManager.getScene().getPartManifest().getChildren().clear();
@@ -33,13 +33,13 @@ public class HelloApplication extends Application {
         }
         SceneManager.getScene().setAnimationManifest(animation.getTreeItem());
 
-        ResourceManifest resourceManifest = AnimationLoader.openResources(new File(binFile.getParent() + "/manifest.resrc"));
-        try {
-            AnimationLoader.recursivelyAdd(resourceManifest.getTreeItem());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        SceneManager.getScene().setResourceManifest(resourceManifest.getTreeItem());
+        //ResourceManifest resourceManifest = AnimationLoader.openResources(new File(binFile.getParent() + "/manifest.resrc"));
+        //try {
+            //AnimationLoader.recursivelyAdd(resourceManifest.getTreeItem());
+        //} catch (Exception e) {
+            //throw new RuntimeException(e);
+        //}
+        //SceneManager.getScene().setResourceManifest(resourceManifest.getTreeItem());
 
     }
 
@@ -54,6 +54,9 @@ public class HelloApplication extends Application {
 
         //File binFile = new File("D:/World of Goo 2/game/res/anim/Launchers/BallLauncher/BallLauncher.anim.bin");
         //onOpenBin(binFile);
+
+        FinalBinAnimation finalBinAnimation = FileTransferManager.readBin(new File("C:/Users/Crazine/Documents/World of Goo 2/game/res/anim/Launchers/BallLauncher/BallLauncher.anim.bin"));
+        FileTransferManager.writeXml(new Animation(finalBinAnimation), finalBinAnimation, new File("C:/Users/Crazine/Documents/BallLauncher.anim.xml"));
 
         new FX_EditorWindow().start();
 

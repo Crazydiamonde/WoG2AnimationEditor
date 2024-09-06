@@ -12,11 +12,12 @@ public class AnimationObject {
     }
 
 
+    @JsonIgnore
     public String getType() {
         return "";
     }
 
-
+    @JsonIgnore
     public String getId() {
         return "";
     }
@@ -27,6 +28,7 @@ public class AnimationObject {
     }
 
 
+    @JsonIgnore
     public void fromString(String s) {
 
     }

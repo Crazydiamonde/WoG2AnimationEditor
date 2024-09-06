@@ -39,6 +39,8 @@ public class Renderer {
 
     public static void render(Canvas canvas, AnimationScene scene, double time) {
 
+        if (true) return;
+
         GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
         graphicsContext.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
@@ -51,7 +53,7 @@ public class Renderer {
 
         int i = 0;
         for (AnimationState animationState : scene.getBall().animationStates) {
-            for (AnimationSection animationSection : animationState.animationSections) {
+            for (AnimationSection animationSection : animationState.animationGroup.animationSections) {
                 graphicsContext.setGlobalAlpha(0.5);
                 RenderTransform renderTransform = new RenderTransform();
                 renderTransform.x += i * 400;
@@ -100,7 +102,7 @@ public class Renderer {
                     }
                 }
             } else if (animationElement instanceof AnimationKeyframe animationKeyframe) {
-                for (AnimationSection animationSection1 : animationKeyframe.animationSections) {
+                for (AnimationSection animationSection1 : animationKeyframe.animationGroup.animationSections) {
                     RenderTransform renderTransform1 = renderTransform.copy();
                     renderTransform1.x += (animationKeyframe.x2 - animationKeyframe.x1) * renderTransform.scaleX;
                     renderTransform1.y -= (animationKeyframe.y1 - animationKeyframe.y2) * renderTransform.scaleY;

@@ -3,6 +3,9 @@ package com.crazine.animationeditor.file;
 import com.crazine.animationeditor.AnimBinReader;
 import com.crazine.animationeditor.AnimBinWriter;
 import com.crazine.animationeditor.BinAnimation;
+import com.crazine.animationeditor.FinalBinAnimation;
+import com.crazine.animationeditor.animation.Animation;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import javafx.stage.FileChooser;
@@ -94,10 +97,10 @@ public class FileTransferManager {
     }
 
 
-    public static BinAnimation readBin(File binFile) {
-        BinAnimation binAnimation;
+    public static FinalBinAnimation readBin(File binFile) {
+        FinalBinAnimation binAnimation;
         try {
-            binAnimation = AnimBinReader.read(binFile.toPath());
+            binAnimation = AnimBinReader.readFinal(binFile.toPath());
         } catch (IOException e) {
             e.printStackTrace();
             return null;
@@ -107,11 +110,11 @@ public class FileTransferManager {
         return binAnimation;
     }
 
-    public static BinAnimation readXml(File xmlFile) {
-        BinAnimation binAnimation;
+    public static FinalBinAnimation readXml(File xmlFile) {
+        FinalBinAnimation binAnimation;
         try {
             XmlMapper xmlMapper = new XmlMapper();
-            binAnimation = xmlMapper.readValue(xmlFile, BinAnimation.class);
+            binAnimation = xmlMapper.readValue(xmlFile, FinalBinAnimation.class);
         } catch (IOException e) {
             e.printStackTrace();
             return null;
@@ -122,19 +125,19 @@ public class FileTransferManager {
     }
 
 
-    public static void writeBin(BinAnimation binAnimation, File binFile) {
+    public static void writeBin(FinalBinAnimation binAnimation, File binFile) {
         if (binFile == null) return;
         lastSavedBin = binFile;
         lastOpenedBin = binFile;
         transferMode = FileTransferMode.XML_TO_BIN;
-        try {
-            AnimBinWriter.write(binFile.toPath(), binAnimation);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        //try {
+            //AnimBinWriter.write(binFile.toPath(), binAnimation);
+        //} catch (IOException e) {
+        //    e.printStackTrace();
+        //}
     }
 
-    public static void writeXml(BinAnimation binAnimation, File xmlFile) {
+    public static void writeXml(Animation binAnimation, FinalBinAnimation finalBinAnimation, File xmlFile) {
         if (xmlFile == null) return;
         lastSavedXml = xmlFile;
         lastOpenedXml = xmlFile;
@@ -142,7 +145,9 @@ public class FileTransferManager {
         try {
             XmlMapper xmlMapper = new XmlMapper();
             xmlMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
-            xmlMapper.writeValue(xmlFile, binAnimation);
+            xmlMapper.configure(SerializationFeature.WRITE_ENUMS_USING_TO_STRING, true);
+            xmlMapper.writeValue(new File(xmlFile.getPath() + ".old.xml"), finalBinAnimation);
+            xmlMapper.writeValue(new File(xmlFile.getPath() + ".new.xml"), binAnimation);
         } catch (IOException e) {
             e.printStackTrace();
         }

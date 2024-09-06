@@ -1,8 +1,10 @@
 package com.crazine.animationeditor.javafx;
 
 import com.crazine.animationeditor.AnimationScene;
+import com.crazine.animationeditor.FinalBinAnimation;
 import com.crazine.animationeditor.HelloApplication;
 import com.crazine.animationeditor.SceneManager;
+import com.crazine.animationeditor.animation.Animation;
 import com.crazine.animationeditor.animation.FX_PropertiesView;
 import com.crazine.animationeditor.file.FileTransferManager;
 import com.crazine.animationeditor.javafx.eventHandlers.MouseWheelMovedManager;
@@ -38,7 +40,8 @@ public class FX_Scene {
         binToXml.setOnAction(event -> {
             File binFile = FileTransferManager.promptOpenBin(stage);
             HelloApplication.onOpenBin(binFile);
-            FileTransferManager.writeXml(FileTransferManager.readBin(binFile), FileTransferManager.promptSaveXml(binFile, stage));
+            FinalBinAnimation finalBinAnimation = FileTransferManager.readBin(binFile);
+            FileTransferManager.writeXml(new Animation(finalBinAnimation), finalBinAnimation, FileTransferManager.promptSaveXml(binFile, stage));
         });
 
         MenuItem xmlToBin = new MenuItem("Translate .anim.xml to .anim.bin...");
@@ -50,7 +53,8 @@ public class FX_Scene {
         MenuItem repeat = new MenuItem("Repeat last operation");
         repeat.setOnAction(event -> {
             if (FileTransferManager.getTransferMode() == FileTransferManager.FileTransferMode.BIN_TO_XML) {
-                FileTransferManager.writeXml(FileTransferManager.readBin(FileTransferManager.getLastOpenedBin()), FileTransferManager.getLastSavedXml());
+                FinalBinAnimation finalBinAnimation = FileTransferManager.readBin(FileTransferManager.getLastOpenedBin());
+                FileTransferManager.writeXml(new Animation(finalBinAnimation), finalBinAnimation, FileTransferManager.getLastSavedXml());
             } else {
                 FileTransferManager.writeBin(FileTransferManager.readXml(FileTransferManager.getLastOpenedXml()), FileTransferManager.getLastSavedBin());
             }
@@ -74,7 +78,8 @@ public class FX_Scene {
             boolean success = false;
             if (db.hasFiles()) for (File file : db.getFiles()) {
                 if (file.getName().endsWith(".anim.bin")) {
-                    FileTransferManager.writeXml(FileTransferManager.readBin(file), FileTransferManager.promptSaveXml(file, stage));
+                    FinalBinAnimation finalBinAnimation = FileTransferManager.readBin(file);
+                    FileTransferManager.writeXml(new Animation(finalBinAnimation), finalBinAnimation, FileTransferManager.promptSaveXml(file, stage));
                 } else if (file.getName().endsWith(".anim.xml")) {
                     FileTransferManager.writeBin(FileTransferManager.readXml(file), FileTransferManager.promptSaveBin(file, stage));
                 }

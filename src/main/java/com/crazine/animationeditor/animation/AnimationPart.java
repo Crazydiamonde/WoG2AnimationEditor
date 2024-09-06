@@ -1,5 +1,7 @@
 package com.crazine.animationeditor.animation;
 
+import com.crazine.animationeditor.AnimationUtil;
+import com.crazine.animationeditor.FinalBinAnimation;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
@@ -47,6 +49,39 @@ public class AnimationPart extends AnimationObject {
     @Override
     public String getId() {
         return image;
+    }
+
+
+    public AnimationPart(FinalBinAnimation binAnimation, int animationPartIndex) {
+
+        FinalBinAnimation.AnimationPart animationPart = binAnimation.animationParts[animationPartIndex];
+
+        int imageStringTableIndex = binAnimation.animationImageStringTableIndices[animationPart.imageIndex];
+        FinalBinAnimation.AnimationStringDefinition stringDefinition =
+                binAnimation.animationStringDefinitions[imageStringTableIndex];
+        image = AnimationUtil.getStringFromStringTable(binAnimation.animationStringTable,
+                stringDefinition.stringTableIndex);
+
+        angleTopLeft = animationPart.angleTopLeft;
+
+        angleBottomRight = animationPart.angleBottomRight;
+
+        centerX = animationPart.centerX;
+
+        centerY = animationPart.centerY;
+
+        offsetX = animationPart.offsetX;
+
+        offsetY = animationPart.offsetY;
+
+        scaleX = animationPart.scaleX;
+
+        scaleY = animationPart.scaleY;
+
+        colorize = animationPart.colorize;
+
+        unknown1 = animationPart.attribute11;
+
     }
 
 }

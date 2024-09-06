@@ -1,6 +1,7 @@
 package com.crazine.animationeditor.animation;
 
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
+import com.crazine.animationeditor.AnimationUtil;
+import com.crazine.animationeditor.FinalBinAnimation;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 public class AnimationState extends AnimationObject {
@@ -14,17 +15,7 @@ public class AnimationState extends AnimationObject {
     @JacksonXmlProperty(isAttribute = true)
     public int localId;
 
-    @JacksonXmlProperty(isAttribute = true)
-    public int durationFrames;
-
-    @JacksonXmlProperty(isAttribute = true)
-    public int unknown1;
-
-    @JacksonXmlElementWrapper(localName = "elements", useWrapping = false)
-    public AnimationSection[] animationSections;
-
-    @JacksonXmlElementWrapper(localName = "events", useWrapping = false)
-    public AnimationEvent[] animationEvents;
+    public AnimationGroup animationGroup;
 
     @Override
     public String getType() {
@@ -34,6 +25,25 @@ public class AnimationState extends AnimationObject {
     @Override
     public String getId() {
         return name;
+    }
+
+
+    public AnimationState(FinalBinAnimation binAnimation, int animationStateIndex) {
+
+        FinalBinAnimation.AnimationState animationState = binAnimation.animationStates[animationStateIndex];
+
+        int nameStringTableIndex = binAnimation.animationStateNameStringTableIndices[animationStateIndex];
+        FinalBinAnimation.AnimationStringDefinition stringDefinition =
+                binAnimation.animationStringDefinitions[nameStringTableIndex];
+        name = AnimationUtil.getStringFromStringTable(binAnimation.animationStringTable,
+                stringDefinition.stringTableIndex);
+
+        globalId = animationState.globalIdHash;
+
+        localId = animationState.localIdHash;
+
+        animationGroup = new AnimationGroup(binAnimation, animationState.groupIndex);
+
     }
 
 }
